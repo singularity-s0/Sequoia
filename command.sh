@@ -1,0 +1,4 @@
+
+srun -p a800 --cpus-per-task=4 --mem-per-cpu=4G --gres=gpu:1 python testbed.py --model  JackFram/llama-68m   --target meta-llama/Llama-2-7b-hf --T 0.7 --P 1.0  --start 0 --end 200 --M 384 --growmap /remote-home/xjzhao/Sequoia/A100_growmaps/68m_7b/growmaps/A100-C4-68m-7b-greedy.pt --dataset c4 --Mode benchmark | tee ../a800-result.log
+
+srun -p x090 --cpus-per-task=4 --mem-per-cpu=4G --gres=gpu:1 python testbed.py --model  JackFram/llama-68m   --target meta-llama/Llama-2-7b-hf --T 0.7 --P 1.0  --start 0 --end 200 --M 384 --growmap ../3090-C4-68m-7b-stochastic.pt --dataset c4 --Mode benchmark | tee ../3090-result.log
