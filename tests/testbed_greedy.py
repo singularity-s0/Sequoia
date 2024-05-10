@@ -1,3 +1,5 @@
+# srun -p x090 --cpus-per-task=4 --mem-per-cpu=4G --gres=gpu:1 --pty --nodelist=x090-1 python testbed_greedy.py --model /remote-home/share/personal/xjzhao/moss-2-366m-llama/ --target /remote-home/share/personal/xjzhao/moss2-2_5b-llama/ --T 0.6 --P 1.0 --start 0 --end 200 --M 384 --growmap ../A100_growmaps/68m_7b/growmaps/A100-C4-68m-7b-greedy.pt --Mode baseline --dataset c4
+
 import sys
 sys.path.append("..")
 from transformers import DataCollatorForLanguageModeling, AutoTokenizer
@@ -215,7 +217,7 @@ def simulation_benchmark(target_model : GraphInferenceEngineTG, draft_model: Gra
 
 
 
-tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", use_fast=False)
+tokenizer = AutoTokenizer.from_pretrained("/remote-home/share/models/moss2-2_5b-hf", use_fast=False, trust_remote_code=True)
 tokenizer.pad_token = tokenizer.eos_token
 eval_list = list(range(200, 2000))
 import random
