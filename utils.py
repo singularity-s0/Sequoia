@@ -106,7 +106,7 @@ def _make_causal_mask(
     mask = mask.to(dtype)
     return mask
 
-def cuda_graph_for_residual(device="cuda:0", dtype=torch.float16, dim=32000, n_warmups=3, mempool=None):
+def cuda_graph_for_residual(device="cuda:0", dtype=torch.float16, dim=137728, n_warmups=3, mempool=None):
     static_p = torch.full((dim,), 1, dtype=dtype, device=device)
     static_q = torch.full((dim,), 0, dtype=dtype, device=device)
 
@@ -137,7 +137,7 @@ def cuda_graph_for_residual(device="cuda:0", dtype=torch.float16, dim=32000, n_w
 
 def cuda_graph_for_sampling_without_replacement(
                 device="cuda:0", dtype=torch.float16, 
-                dim=32000, max_length=384, 
+                dim=137728, max_length=384, 
                 n_warmups=3, mempool=None,
                 idx_len = 8, num_samples = 16,
                 temperature = 0.6, tree_size = 64):
@@ -178,7 +178,7 @@ def cuda_graph_for_sampling_without_replacement(
 
 def cuda_graph_for_sampling_argmax(
                 device="cuda:0", dtype=torch.float16, 
-                dim=32000, max_length=384, 
+                dim=137728, max_length=384, 
                 n_warmups=3, mempool=None,
                 idx_len = 8, num_samples = 16,
                 temperature = 0.6, tree_size = 64):
@@ -213,7 +213,7 @@ def cuda_graph_for_sampling_argmax(
 
 def cuda_graph_for_sampling_with_replacement(
                 device="cuda:0", dtype=torch.float16, 
-                dim=32000, max_length=384, 
+                dim=137728, max_length=384, 
                 n_warmups=3, mempool=None,
                 idx_len = 8, num_samples = 16,
                 temperature = 0.6, tree_size = 64):

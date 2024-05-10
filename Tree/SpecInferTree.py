@@ -16,7 +16,7 @@ class SpecInferTree(Tree):
                  max_length = 256,
                  device :str = 'cpu',
                  max_target_seq = 256,
-                 vocab_size = 32000,
+                 vocab_size = 137728,
                  grow_map = None,
                  attn_mask = None, 
                  sequence = None, 

@@ -1,4 +1,5 @@
 # srun -p x090 --cpus-per-task=4 --mem-per-cpu=4G --gres=gpu:1 --pty --nodelist=x090-1 python testbed_greedy.py --model /remote-home/share/personal/xjzhao/moss-2-366m-llama/ --target /remote-home/share/personal/xjzhao/moss2-2_5b-llama/ --T 0.6 --P 1.0 --start 0 --end 200 --M 384 --growmap ../A100_growmaps/68m_7b/growmaps/A100-C4-68m-7b-greedy.pt --Mode baseline --dataset c4
+# srun -p x090 --cpus-per-task=4 --mem-per-cpu=4G --gres=gpu:1 --pty --nodelist=x090-1 python testbed_greedy.py --model /remote-home/share/personal/xjzhao/moss-2-366m-llama/ --target /remote-home/share/personal/xjzhao/moss2-2_5b-llama/ --T 0.6 --P 1.0 --start 0 --end 200 --M 384 --growmap ../A100_growmaps/68m_7b/growmaps/A100-C4-68m-7b-greedy.pt --Mode greedy --dataset c4
 
 import sys
 sys.path.append("..")

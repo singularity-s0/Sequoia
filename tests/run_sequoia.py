@@ -64,7 +64,7 @@ def load_jsonl(
 
 def simulation_fast(target_model : GraphInferenceEngineTG, draft_model: GraphInferenceEngine, prompts :list[str], tokenizer: AutoTokenizer,T=0.6, top_p=0.9,
             max_length=512, residual_graph=None, grow_map=None, sampling_callables = None,
-            sample_gather_indices = None, vocab_size=32000):
+            sample_gather_indices = None, vocab_size=137728):
 
     num_eval_steps = len(prompts)
     num_decoding_steps = 0
@@ -156,7 +156,7 @@ def simulation_fast(target_model : GraphInferenceEngineTG, draft_model: GraphInf
 
 def simulation_baseline(target_model : GraphInferenceEngineTG, draft_model: GraphInferenceEngine, prompts :list[str], tokenizer: AutoTokenizer,T=0.6, top_p=0.9,
             max_length=512, residual_graph=None, grow_map=None, sampling_callables = None,
-            sample_gather_indices = None, vocab_size=32000):
+            sample_gather_indices = None, vocab_size=137728):
 
     num_eval_steps = len(prompts)
     num_decoding_steps = 0
@@ -322,7 +322,7 @@ if __name__ == "__main__":
     parser.add_argument('--seed', type=int, default=17, help='random seed')
     parser.add_argument('--Mode', type=str, default="spec", help='tree mode')
     parser.add_argument('--staylayer', type=int, default=0, help='layers on chip')
-    parser.add_argument('--vocab', type=int, default=32000, help='vocab size')
+    parser.add_argument('--vocab', type=int, default=137728, help='vocab size')
     args = parser.parse_args()
     setup_seed(args.seed)
     main(args)
