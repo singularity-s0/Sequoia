@@ -220,7 +220,7 @@ def simulation_benchmark(target_model : GraphInferenceEngineTG, draft_model: Gra
 
 
 
-tokenizer = AutoTokenizer.from_pretrained("/remote-home/share/models/moss2-2_5b-hf", use_fast=False)
+tokenizer = AutoTokenizer.from_pretrained("/remote-home/share/models/moss2-2_5b-hf", use_fast=False, trust_remote_code=True)
 tokenizer.pad_token = tokenizer.eos_token
 eval_list = list(range(200, 2000))
 import random
