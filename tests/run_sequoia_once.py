@@ -32,7 +32,6 @@ def simulation_fast(target_model: GraphInferenceEngineTG,
     parents_buffer = None
     position_ids = torch.zeros(max_length).long().to('cuda:0')
     with torch.no_grad():
-        prompt = "<|im_start|>user\n" + prompt + "<|im_end|>" + "\n<|im_start|>assistant\n"
         input_ids = tokenizer(
             prompt, return_tensors="pt").input_ids.to('cuda:0')
         # if input_ids.shape[1] > 200:
