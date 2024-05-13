@@ -126,7 +126,6 @@ def simulation_baseline(target_model: GraphInferenceEngineTG, draft_model: Graph
 
     with torch.no_grad():
         for step, batch in tqdm(enumerate(prompts), total=num_eval_steps):
-            batch = "[INST]" + batch + "[/INST]" + "\n\nASSISTANT:"
             input_ids = tokenizer(
                 batch, return_tensors="pt").input_ids.to('cuda:0')
             initial_len = input_ids.shape[1]
