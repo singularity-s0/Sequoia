@@ -1,3 +1,5 @@
+# srun -p x090 --cpus-per-task=4 --mem-per-cpu=4G --gres=gpu:1 --pty python test_accept.py --model /remote-home/share/personal/xjzhao/moss-2-366m-llama/ --target /remote-home/share/personal/xjzhao/moss2-2_5b-llama/ --T 0.6 --P 1.0 --M 1300 --ALG stochastic --dst ../hellaswag-stochastic-acceptance-rate-vector.pt
+
 import sys
 sys.path.append("..")
 from transformers import DataCollatorForLanguageModeling, AutoTokenizer
@@ -7,7 +9,7 @@ from torch.utils.data.dataloader import DataLoader
 from tqdm import tqdm
 from accelerate import Accelerator
 import argparse
-from data_converter import convert_wiki_dataset, convert_cnn_dataset, convert_c4_dataset_eval, convert_dataset
+from data_converter import convert_wiki_dataset, convert_cnn_dataset, convert_hellaswag, convert_dataset
 import argparse
 from Tree.SpecTree import SpecTreeTest
 from Tree.GreedyTree import GreedyTreeTest
@@ -15,14 +17,14 @@ from Engine.Engine import GraphInferenceEngine, GraphInferenceEngineTG
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, help='model')
 parser.add_argument('--target', type=str, help='target model')
-parser.add_argument('--dataset', type=str, default="../dataset/c4_small.json", help='dataset path')
+parser.add_argument('--dataset', type=str, default="hellaswag", help='dataset path')
 parser.add_argument('--start', type=int, default=0, help='start')
 parser.add_argument('--end', type=int, default=200, help='end')
 parser.add_argument('--T', type=float, default=0.6, help='temperature')
 parser.add_argument('--P', type=float, default=0.9, help='top_p')
 parser.add_argument('--ALG', type=str, default="stochastic", help='algorithm')
 parser.add_argument('--D', type=int, default=1, help='depth')
-parser.add_argument('--W', type=int, default=16, help='max width')
+parser.add_argument('--W', type=int, default=32, help='max width')
 parser.add_argument('--M', type=int, default=256, help='max length')
 parser.add_argument('--Mode', type=str, default="greedy", help='tree mode')
 parser.add_argument('--offloading', action='store_true')
@@ -75,8 +77,6 @@ def simulation_stochastic(target_model : GraphInferenceEngineTG, draft_model: Gr
                 
             draft_model.clear_kv()
             target_model.clear_kv()
-            if num_large_model_steps > 0:
-                print(num_decoding_steps / num_large_model_steps)
     print("total decoding steps: {}".format(num_decoding_steps), "large model steps: {}".format(num_large_model_steps), "avg decoding step: {}".format(num_decoding_steps / num_large_model_steps))
     branch_prob = branch_prob / branch_prob.sum(dim=-1) 
     accumated_prob = branch_prob.cumsum(dim=-1)
@@ -129,8 +129,6 @@ def simulation_greedy(target_model : GraphInferenceEngineTG, draft_model: GraphI
                 
             draft_model.clear_kv()
             target_model.clear_kv()
-            if num_large_model_steps > 0:
-                print(num_decoding_steps / num_large_model_steps)
     print("total decoding steps: {}".format(num_decoding_steps), "large model steps: {}".format(num_large_model_steps), "avg decoding step: {}".format(num_decoding_steps / num_large_model_steps))
     branch_prob = branch_prob / branch_prob.sum(dim=-1) 
     accumated_prob = branch_prob.cumsum(dim=-1)
@@ -140,7 +138,7 @@ def simulation_greedy(target_model : GraphInferenceEngineTG, draft_model: GraphI
     return num_decoding_steps / num_large_model_steps
 
 
-tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf", use_fast=False)
+tokenizer = AutoTokenizer.from_pretrained("/remote-home/share/models/moss2-2_5b-hf", use_fast=False, trust_remote_code=True)
 tokenizer.pad_token = tokenizer.eos_token
 if args.dataset == 'openwebtext':
     tokenized_dataset_eval = load_from_disk("../dataset/openwebtext_eval").select(list(range(args.start, args.end)))
@@ -148,6 +146,8 @@ elif args.dataset == 'wiki':
     tokenized_dataset_eval = convert_wiki_dataset(tokenizer=tokenizer).select(list(range(args.start, args.end)))
 elif args.dataset == 'cnn':
     tokenized_dataset_eval = convert_cnn_dataset(tokenizer=tokenizer).select(list(range(args.start, args.end)))
+elif args.dataset == 'hellaswag':
+    tokenized_dataset_eval = convert_hellaswag(tokenizer=tokenizer)
 else:
     tokenized_dataset_eval = convert_dataset(tokenizer=tokenizer,file_path="../dataset/c4_small.json").select(list(range(args.start, args.end)))
 

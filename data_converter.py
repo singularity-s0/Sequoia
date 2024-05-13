@@ -34,6 +34,14 @@ def convert_c4_dataset_eval(tokenizer, seq_len = 256):
     dataset.set_format(type='torch', columns=['input_ids', 'attention_mask'])
     return dataset
 
+def convert_hellaswag(tokenizer, seq_len = 1024):
+    dataset = load_dataset("Rowan/hellaswag", split="validation")
+    def tokenize_function(examples):
+            return tokenizer(examples["ctx"], return_tensors='pt',max_length=seq_len,padding=True,truncation=True)
+    dataset = dataset.map(tokenize_function, batched=True, remove_columns=[n for n in dataset.column_names if n != 'input_ids' and n != 'attention_mask'])
+    dataset.set_format(type='torch', columns=['input_ids', 'attention_mask'])
+    return dataset
+
 def convert_dataset(tokenizer, file_path):
     dataset = load_dataset("json", data_files=file_path, split="train")
     def tokenize_function(examples):

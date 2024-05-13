@@ -1,3 +1,9 @@
+# hellaswag
+# srun -p x090 --cpus-per-task=4 --mem-per-cpu=4G --gres=gpu:1 --pty --nodelist=x090-1 python testbed.py --model /remote-home/share/personal/xjzhao/moss-2-366m-llama/ --target /remote-home/share/personal/xjzhao/moss2-2_5b-llama/ --T 0.6 --P 1.0 --M 1300 --growmap ../L40_growmaps/68m_7b/growmaps/L40-CNN-68m-7b-stochastic.pt
+
+# chain
+# srun -p x090 --cpus-per-task=4 --mem-per-cpu=4G --gres=gpu:1 --pty --nodelist=x090-1 python testbed.py --model /remote-home/share/personal/xjzhao/moss-2-366m-llama/ --target /remote-home/share/personal/xjzhao/moss2-2_5b-llama/ --T 0.6 --P 1.0 --M 1300 --growmap ../L40_growmaps/8-chain.pt
+
 import sys
 sys.path.append("..")
 from transformers import DataCollatorForLanguageModeling, AutoTokenizer
@@ -9,7 +15,7 @@ from tqdm import tqdm
 from torch.nn.functional import softmax
 from accelerate import Accelerator
 import argparse
-from data_converter import convert_wiki_dataset, convert_cnn_dataset, convert_c4_dataset_eval
+from data_converter import convert_wiki_dataset, convert_cnn_dataset, convert_c4_dataset_eval, convert_hellaswag
 import argparse
 from Tree.SpecTree import SpecTree
 import time
@@ -20,7 +26,7 @@ import random
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, help='model')
 parser.add_argument('--target', type=str, help='target model')
-parser.add_argument('--dataset', type=str, default="../dataset/c4_small.json", help='dataset path')
+parser.add_argument('--dataset', type=str, default="hellaswag", help='dataset path')
 parser.add_argument('--growmap', type=str, default="../growmaps/68m_7b-64.pt", help='growmap path')
 parser.add_argument('--start', type=int, default=0, help='start')
 parser.add_argument('--end', type=int, default=200, help='end')
@@ -232,6 +238,8 @@ elif args.dataset == 'wiki':
     tokenized_dataset_eval = convert_wiki_dataset(tokenizer=tokenizer).select(eval_list[args.start :args.end])
 elif args.dataset == 'cnn':
     tokenized_dataset_eval = convert_cnn_dataset(tokenizer=tokenizer).select(eval_list[args.start :args.end])
+elif args.dataset == 'hellaswag':
+    tokenized_dataset_eval = convert_hellaswag(tokenizer=tokenizer)
 else:
     tokenized_dataset_eval = convert_c4_dataset_eval(tokenizer=tokenizer).select(eval_list[args.start :args.end])
 
