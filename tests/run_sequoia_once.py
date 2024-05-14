@@ -7,6 +7,7 @@ from Engine.Engine import GraphInferenceEngine, GraphInferenceEngineTG
 from utils import get_sampling_logits, _make_causal_mask, cuda_graph_for_residual, cuda_graph_for_sampling_without_replacement
 import time
 from Tree.SpecTree import SpecTree
+from Tree.GreedyTree import GreedyTree
 import argparse
 from torch.nn.functional import softmax
 from tqdm import tqdm
@@ -52,16 +53,16 @@ def simulation_fast(target_model: GraphInferenceEngineTG,
         draft_kv_len = 0
         target_kv_len = 0
         attn_mask.fill_(torch.finfo(dtype).min)
-        spectree = SpecTree(prefix=input_ids.squeeze(0), device='cuda:0', temperature=T,
-                            top_p=top_p,
-                            draft_kv_len=draft_kv_len, target_kv_len=target_kv_len,
-                            draft_model_engine=draft_model, target_model_engine=target_model, max_length=max_length, grow_map=grow_map,
-                            attn_mask=attn_mask, sequence=sequence, new_tokens_buffer=new_tokens_buffer,
-                            parents_buffer=parents_buffer,
-                            position_ids=position_ids,
-                            residual_graph=residual_graph,
-                            sampling_callables=sampling_callables,
-                            sample_gather_indices=sample_gather_indices, vocab_size=vocab_size)
+        spectree = GreedyTree(prefix=input_ids.squeeze(0), device='cuda:0', temperature=T,
+                                top_p=top_p,
+                                draft_kv_len=draft_kv_len, target_kv_len=target_kv_len,
+                                draft_model_engine=draft_model, target_model_engine=target_model, max_length=max_length, grow_map=grow_map,
+                                attn_mask = attn_mask, sequence = sequence, new_tokens_buffer = new_tokens_buffer, 
+                                parents_buffer = parents_buffer, 
+                                position_ids = position_ids,
+                                residual_graph = residual_graph,
+                                sampling_callables=sampling_callables,
+                                sample_gather_indices = sample_gather_indices)
         torch.cuda.synchronize()
         t1 = time.time()
         pos = 0

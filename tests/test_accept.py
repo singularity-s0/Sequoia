@@ -9,7 +9,7 @@ from torch.utils.data.dataloader import DataLoader
 from tqdm import tqdm
 from accelerate import Accelerator
 import argparse
-from data_converter import convert_wiki_dataset, convert_cnn_dataset, convert_hellaswag, convert_dataset
+from data_converter import convert_wiki_dataset, convert_cnn_dataset, convert_hellaswag, convert_dataset, convert_xcopa_zh, convert_xstorycloze_zh
 import argparse
 from Tree.SpecTree import SpecTreeTest
 from Tree.GreedyTree import GreedyTreeTest
@@ -148,6 +148,10 @@ elif args.dataset == 'cnn':
     tokenized_dataset_eval = convert_cnn_dataset(tokenizer=tokenizer).select(list(range(args.start, args.end)))
 elif args.dataset == 'hellaswag':
     tokenized_dataset_eval = convert_hellaswag(tokenizer=tokenizer)
+elif args.dataset == 'xcopa_zh':
+    tokenized_dataset_eval = convert_xcopa_zh(tokenizer=tokenizer)
+elif args.dataset == 'xstorycloze_zh':
+    tokenized_dataset_eval = convert_xstorycloze_zh(tokenizer=tokenizer)
 else:
     tokenized_dataset_eval = convert_dataset(tokenizer=tokenizer,file_path="../dataset/c4_small.json").select(list(range(args.start, args.end)))
 

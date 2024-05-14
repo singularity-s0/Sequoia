@@ -15,7 +15,7 @@ from tqdm import tqdm
 from torch.nn.functional import softmax
 from accelerate import Accelerator
 import argparse
-from data_converter import convert_wiki_dataset, convert_cnn_dataset, convert_c4_dataset_eval, convert_hellaswag
+from data_converter import convert_wiki_dataset, convert_cnn_dataset, convert_c4_dataset_eval, convert_hellaswag, convert_xstorycloze_zh, convert_xcopa_zh
 import argparse
 from Tree.SpecTree import SpecTree
 import time
@@ -240,6 +240,10 @@ elif args.dataset == 'cnn':
     tokenized_dataset_eval = convert_cnn_dataset(tokenizer=tokenizer).select(eval_list[args.start :args.end])
 elif args.dataset == 'hellaswag':
     tokenized_dataset_eval = convert_hellaswag(tokenizer=tokenizer)
+elif args.dataset == 'xcopa_zh':
+    tokenized_dataset_eval = convert_xcopa_zh(tokenizer=tokenizer)
+elif args.dataset == 'xstorycloze_zh':
+    tokenized_dataset_eval = convert_xstorycloze_zh(tokenizer=tokenizer)
 else:
     tokenized_dataset_eval = convert_c4_dataset_eval(tokenizer=tokenizer).select(eval_list[args.start :args.end])
 

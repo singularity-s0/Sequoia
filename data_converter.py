@@ -42,6 +42,22 @@ def convert_hellaswag(tokenizer, seq_len = 1024):
     dataset.set_format(type='torch', columns=['input_ids', 'attention_mask'])
     return dataset
 
+def convert_xcopa_zh(tokenizer, seq_len = 1024):
+    dataset = load_dataset("xcopa", "zh", split="test")
+    def tokenize_function(examples):
+            return tokenizer(examples["premise"], return_tensors='pt',max_length=seq_len,padding=True,truncation=True)
+    dataset = dataset.map(tokenize_function, batched=True, remove_columns=[n for n in dataset.column_names if n != 'input_ids' and n != 'attention_mask'])
+    dataset.set_format(type='torch', columns=['input_ids', 'attention_mask'])
+    return dataset
+
+def convert_xstorycloze_zh(tokenizer, seq_len = 1024):
+    dataset = load_dataset("juletxara/xstory_cloze", "zh", split="eval")
+    def tokenize_function(examples):
+            return tokenizer(examples["input_sentence_1"] + examples["input_sentence_2"] + examples["input_sentence_3"] + examples["input_sentence_4"], return_tensors='pt',max_length=seq_len,padding=True,truncation=True)
+    dataset = dataset.map(tokenize_function, batched=True, remove_columns=[n for n in dataset.column_names if n != 'input_ids' and n != 'attention_mask'])
+    dataset.set_format(type='torch', columns=['input_ids', 'attention_mask'])
+    return dataset
+
 def convert_dataset(tokenizer, file_path):
     dataset = load_dataset("json", data_files=file_path, split="train")
     def tokenize_function(examples):
