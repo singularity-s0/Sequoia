@@ -127,6 +127,8 @@ grow_map = {
     "size": num_nodes
 }
 
+print(grow_map)
+
 path = config['dst']
 
 torch.save(grow_map, path)

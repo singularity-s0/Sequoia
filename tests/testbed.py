@@ -244,8 +244,10 @@ elif args.dataset == 'xcopa_zh':
     tokenized_dataset_eval = convert_xcopa_zh(tokenizer=tokenizer)
 elif args.dataset == 'xstorycloze_zh':
     tokenized_dataset_eval = convert_xstorycloze_zh(tokenizer=tokenizer)
-else:
+elif args.dataset == 'c4':
     tokenized_dataset_eval = convert_c4_dataset_eval(tokenizer=tokenizer).select(eval_list[args.start :args.end])
+else:
+    raise ValueError("dataset not supported")
 
 data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
 dataloader = DataLoader(tokenized_dataset_eval, batch_size=1, collate_fn=data_collator, shuffle=False)
